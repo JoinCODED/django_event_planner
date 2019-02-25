@@ -6,7 +6,7 @@ from django.urls import reverse
 
 class Event(models.Model):
     name = models.CharField(max_length = 120)
-
+    date = models.DateField()
     description = models.TextField()
     number_of_tickets = models.IntegerField()
     cho_state = (
