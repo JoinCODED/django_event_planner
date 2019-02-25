@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Detail{% endblock title %}
+
+{% block content %}
+<br><br><br><br>
+<div class="container">
+	<div class="card mt-5 mb-5">
+		<h5 class="card-header text-center">
+			{{event.name}}
+		</h5>
+		<p class="card-text text-center"> {{event.description}} </p>
+		<p class="card-text">Organized by : {{event.organizer}}</p>
+		<img src="{{event.poster.url}}" class="img-fluid">
+
+			
+    </div>
+
+   {% if request.user == event.organizer %}
+   	  <div class="col-md-4">
+            <a href="{% url 'update' event.id %}" class="btn btn-outline-primary btn-block">Update</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'delete' event.id %}" class="btn btn-outline-danger btn-block">Delete</a>
+        </div>
+   {% endif %}
+</div>
+<br><br><br><br>
+{% endblock content %}

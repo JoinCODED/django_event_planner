@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Update Event
+
+
+{% endblock title %}
+
+{% block content %}
+    
+    <br><br><br><br>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <form method="post" action="{% url 'update' event.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" name="OK Sava">
+          </form>
+        </div>
+      </div>
+    </div>
+    <br><br><br><br>
+        <!--<script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>-->
+{% endblock content %}
+ 
