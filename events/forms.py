@@ -40,7 +40,7 @@ class EventForm(forms.ModelForm):
         exclude = ['organizer',]
 
         widgets = {
-            'date':forms.DateTimeInput(attrs={'type':'date'}),
+            'dateandtime':forms.DateTimeInput(attrs={'type':'date'}),
         }
 
     #def clean_date(self):

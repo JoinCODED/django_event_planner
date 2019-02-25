@@ -121,7 +121,7 @@ def event_create(request):
 
 def event_list(request):
 
-    events = Event.objects.all().filter(date__gte = datetime.datetime.today() )
+    events = Event.objects.all().filter(dateandtime__gte = datetime.datetime.today() )
     
     context = {
     'events': events
