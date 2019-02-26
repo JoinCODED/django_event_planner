@@ -6,10 +6,35 @@
     <div class="container">
       <h1 class="masthead-heading mb-0">All the events,</h1>
       <h2 class="masthead-subheading mb-0">You could ever want...</h2>
+      <br> <br>
       {% if request.user.is_anonymous %}
         <a href="{% url 'signup' %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up to find events!</a>
       {% else %}
-        <a href="{% url 'list' %}" class="btn btn-primary btn-xl rounded-pill mt-5">Find events!</a>
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Event</th>
+            <th scope="col">Number of Tickets Remaining</th>
+            <th scope="col">Date</th>
+            <th scope="col">Place</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in events %}
+              <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.number_of_tickets}}</td>
+                <td><span class="ml-2">{{item.dateandtime}}</span> </td>
+                <td><span class="ml-2">{{item.place}}</span></td>
+                <td><a class="btn btn-outline-primary" href="{{item.get_absolute_url}}">  detail</a></td>
+               </tr>
+          {% endfor %}
+              <tr>
+                <td colspan="5"> <a class="btn btn-outline-primary" href="{% url 'list' %}"><span class="font-weight-bold"> O O O </span></a></td>
+              </tr>
+        </tbody>
+      </table>    
+       
       {% endif %}
     </div>
   </div>
@@ -17,8 +42,13 @@
   <div class="bg-circle-2 bg-circle"></div>
   <div class="bg-circle-3 bg-circle"></div>
   <div class="bg-circle-4 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
 </header>
 
 
 
-{% endblock %}
+{% endblock content %}
+
+
+

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Events{% endblock title %}
+
+{% block content %}
+    <br><br><br><br>
+<div class="container">
+  <div class="row ">
+{% for event in bookings %}
+<div class="col-4 my-2">
+<div class="card" style="width: 22rem;">
+  <img src="{{event.event.poster.url}}" class="card-img-top" alt="...">
+
+  <div class="card-body">
+    <h5 class="card-title">{{event.event.name}}</h5>
+    <p class="card-text"><small class="text-muted">{{event.event.dateandtime}}</small></p>
+    <hr>
+    <p class="card-text">{{event.event.description}}</p>
+    <hr>
+</div>
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+  <br><br><br><br>
+{% endblock content %}
+
+

@@ -6,7 +6,12 @@
 {% block content %}
     
     <br><br><br><br>
+
+
 <div class="container">
+    
+         <a href="{% url 'create' %}">  <button type="button" class="btn btn-dark" > <i class="fas fa-plus "> <span class="ml-2">Create Event</span></i></button></a>
+        
   <div class="row ">
 {% for event in events %}
 <div class="col-4 my-2">
@@ -17,9 +22,9 @@
     <h5 class="card-title"> Name of Event :{{event.name}}</h5>
     <p class="card-text">Description : {{event.description}}</p>
     <p class="card-text">Organized by : {{event.organizer}}</p>
-    <p class="card-text"><small class="text-muted"> Date :{{event.date}}</small></p>
+    <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small></p>
   </div>
-  <a href="{{event.get_absolute_url}}"> <span>det</span> </a>
+  <a href="{{event.get_absolute_url}}"> <button type="button" class="btn btn-dark btn-block my-2" >  <span>details</span></button> </a>
 </div>
 </div>
 {% endfor %}

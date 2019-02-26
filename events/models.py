@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 
@@ -9,23 +11,21 @@ class Event(models.Model):
     dateandtime = models.DateField()
     description = models.TextField()
     number_of_tickets = models.IntegerField()
-    cho_state = (
+    cho_place = (
+            ('Choose City' , 'Choose City'),
+            ('Riyadh' , 'Riyadh'),
+            ('Jeddah' , 'Jeddah'),
+            ('Dammam' , 'Dammam'),
+            ('Makkah' , 'Makkah'),
 
-            ('SOON' , 'SOON'),
-            ('OPEN' , 'OPEN'),
-            ('CLOSE' , 'CLOSE'),
         )
-
-    
-    state = models.CharField(
-            max_length = 5,
-            choices = cho_state,
-            default =  'SOON',
+    place = models.CharField(
+            max_length = 12,
+            choices = cho_place,
+            default =  'Choose City',
         )
     organizer = models.ForeignKey(User,  on_delete=models.CASCADE, related_name= 'organized')
-
     poster = models.ImageField(upload_to='event_logos', null=False, blank=False)
-
 
     def __str__ (self):
         return self.name
@@ -33,7 +33,21 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'event_id': self.id})
 
+    def seats_left(self):
+        return self.number_of_tickets - sum(self.bookings.all().values_list('number_of_booking', flat=True))
+
 
 class Booking(models.Model):
-    user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name= 'subscriber')
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name='bookings')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='bookings')
+    number_of_booking = models.IntegerField()
+
+    def __str__ (self):
+        return ("%s booking for %s" %(self.user.username , self.event.name))
+
+
+
+
+
+
+

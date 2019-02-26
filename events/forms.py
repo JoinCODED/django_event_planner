@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Event, Booking 
+from .models import Event, Booking
 import datetime
 from tempus_dominus.widgets import DateTimePicker
 
@@ -67,4 +67,16 @@ class EventForm(forms.ModelForm):
        # datetime_obj = datetime.datetime(int(year), int(month), int(day), int(hour), int(minutes))
        # print(datetime_obj)
        # return datetime_obj
+
+
+class BokingForm(forms.ModelForm):
+  class Meta:
+        model = Booking
+        exclude = ['user', 'event']
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email')
 

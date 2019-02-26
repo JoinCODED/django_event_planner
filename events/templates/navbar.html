@@ -15,22 +15,29 @@
         </li>
         {% else %}
 
-        {% if show %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url '' %}">dashbord</a>
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'create' %}">Create Event</a>
+          <a class="nav-link" href="{% url 'dashboard' %}">dashbord</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">{{ request.user }}</a>
+          <div class="dropdown">
+          <a  href="#" class="nav-link dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{request.user}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+            <a class="dropdown-item" href="{% url 'previous_event' %}">Previouse Events</a>
+            <a class="dropdown-item" href="{% url 'my_booking' %}">My Booking</a>
+          </div>
+        </div>
         </li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
+
+
+

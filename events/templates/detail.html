@@ -5,25 +5,90 @@
 {% block content %}
 <br><br><br><br>
 <div class="container">
-	<div class="card mt-5 mb-5">
-		<h5 class="card-header text-center">
-			{{event.name}}
-		</h5>
-		<p class="card-text text-center"> {{event.description}} </p>
-		<p class="card-text">Organized by : {{event.organizer}}</p>
-		<img src="{{event.poster.url}}" class="img-fluid">
-
-			
-    </div>
-
-   {% if request.user == event.organizer %}
-   	  <div class="col-md-4">
+<div class="card mb-3">
+ 	<div class="row no-gutters my-2 mx-2">
+    	<div class="col-md-4">
+      		<img src="{{event.poster.url}}" class="card-img" alt="...">
+    	</div>
+    <div class="col-md-8 align-self-center">
+      	<div class="card-body">
+       	 	<h2 class="card-title text-center">{{event.name}}</h2>
+        	<p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small> <br> <small class="text-muted" > <i class="fas fa-user"></i><span class="ml-2"> Organized by : {{event.organizer}} </span></small></p>
+        	<hr>
+        	<p class="card-text">{{event.description}}</p>
+        	<p class="card-text">Number of Tickets Remaining : <span id="numbr">{{event.number_of_tickets}} </span> </p>
+      	</div>
+      	<div id="tag"></div>
+		  {% if request.user.is_authenticated %}
+		  <div id="bookForm" class="form-inline my-2 mx-2">
+		  <div class="form-group mx-2">
+		    <input id="id_number_of_boking" type="number" name="quantity">
+		  </div> 
+		  <button onclick="booking({{event.id}})" class="btn btn-outline-primary ">Booking</button>
+		</div> 
+		{% endif %}
+  	</div>
+  	</div>
+  	{% if request.user == event.organizer %}
+   	  	<div class="mt-5">
             <a href="{% url 'update' event.id %}" class="btn btn-outline-primary btn-block">Update</a>
         </div>
-        <div class="col-md-4">
+        <div class="my-2">
             <a href="{% url 'delete' event.id %}" class="btn btn-outline-danger btn-block">Delete</a>
         </div>
-   {% endif %}
+        <h2>Booking Details</h2>
+<table class="table table-light">
+        <thead>
+          <tr>
+            <th scope="col">Booked by</th>
+            <th scope="col">Event Name</th>
+            <th scope="col">Total Number of Tickets Booked</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ticket in booked_tickets %}
+              <tr>
+                <td>{{ticket.user}}</td>
+                <td>{{ticket.event}}</td>
+                <td>{{ticket.number_of_booking}}</td>
+               </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+	{% endif %}
+</div>  
 </div>
 <br><br><br><br>
+
+<script type="text/javascript">
+    
+
+    function booking(id) {
+      let number_of_boking = document.getElementById("id_number_of_boking");
+      let tag = document.getElementById("tag");
+      let value = number_of_boking.value;
+        $.ajax(
+            {
+                type:'GET',
+                url: '/event/booking/'+id+'/'+value+'/',
+                error: function(){
+                    console.log('error');
+                },
+                success: function(data){
+                    console.log(data);
+                    let rem_id = "#numbr";
+                        $(rem_id).text(data.new_num_of_tic);
+                        $(tag).addClass(data.tagc);
+                        $(tag).text(data.mass);
+                },
+            }
+        );
+    };
+</script>
+
 {% endblock content %}
+
+
+
+
+
