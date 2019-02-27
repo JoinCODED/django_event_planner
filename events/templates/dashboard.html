@@ -1,38 +1,103 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 
 {% block title %}Events{% endblock title %}
 
 {% block content %}
-    
-    <br><br><br><br>
+<header class="masthead2">
+  <div class="container">
+    <div class="jumbotron">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">My Events</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="add-event" data-toggle="tab" href="#addevent" role="tab" aria-controls="addevent" aria-selected="false">Add Events</a>
+      </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">   
+          <div id="piechart" style="width: 900px; height: 500px;"></div>  
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">  
+          <div class="row ">
+            {% for event in events %}
+            <div class="col-4 my-2">
+            <div class="card" style="width: 22rem;">
+              <img src="{{event.poster.url}}" class="card-img-top" alt="...">
 
-
-<div class="container">
-    
-         <a href="{% url 'create' %}">  <button type="button" class="btn btn-dark" > <i class="fas fa-plus "> <span class="ml-2">Create Event</span></i></button></a>
-        
-  <div class="row ">
-{% for event in events %}
-<div class="col-4 my-2">
-<div class="card" style="width: 22rem;">
-  <img src="{{event.poster.url}}" class="card-img-top" alt="...">
-
-  <div class="card-body">
-    <h5 class="card-title"> Name of Event :{{event.name}}</h5>
-    <p class="card-text">Description : {{event.description}}</p>
-    <p class="card-text">Organized by : {{event.organizer}}</p>
-    <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small></p>
+              <div class="card-body">
+                <h5 class="card-title"> Name of Event :{{event.name}}</h5>
+                <p class="card-text">Description : {{event.description}}</p>
+                <p class="card-text">Organized by : {{event.organizer}}</p>
+                <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small></p>
+              </div>
+              <a href="{{event.get_absolute_url}}"> <button type="button" class="btn btn-dark btn-block my-2" >  <span>details</span></button> </a>
+            </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="tab-pane fade" id="addevent" role="tabpanel" aria-labelledby="add-event">
+          
+          <div class="container text-white">
+            <div class="row">
+              <div class="col">
+                <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form|crispy}}
+                  <input class = "btn btn-primary btn-block mt-5" type="submit" value="Save">
+                </form>
+              </div>
+            </div>
+          </div> 
+        </div> 
+      </div>
+    </div>
   </div>
-  <a href="{{event.get_absolute_url}}"> <button type="button" class="btn btn-dark btn-block my-2" >  <span>details</span></button> </a>
-</div>
-</div>
-{% endfor %}
+<script type="text/javascript">
+      function getdata(){
+          $.ajax(
+            {
+                type:'GET',
+                url: '/get/data',
+                error: function(){
+                    console.log('error');
+                },
+                success: function(data){
+                      // frist = data.event[0];
+                      // console.log(frist)
+                      // second = data.event[1];
+                      console.log(data.event)
+                      ch(data.event)
+                },
+            }
+        );
+      };
+      function ch(someArray){
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable(someArray);
 
-</div>
-</div>
-    <br><br><br><br>
 
+          var options = {
+            title: 'My Events'
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+          chart.draw(data, options);
+        }
+      }
+
+</script>
+</header>
 {% endblock content %}
+
+    
 
 

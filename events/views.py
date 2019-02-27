@@ -7,14 +7,14 @@ UserLogin,
 EventForm,
 BokingForm,
 UserForm,
+ProfileForm,
 )
-from .models import Event, Booking
+from .models import Event, Booking, Profile
 import datetime
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Q
-
-
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -26,19 +26,25 @@ def home(request):
     return render(request, 'home.html', context)
 
 class Signup(View):
-    form_class = UserSignup
+    form_class = UserSignup 
+    profile_form_class = ProfileForm
     template_name = 'signup.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        form2 = self.profile_form_class()
+        return render(request, self.template_name, {'form': form , 'form2': form2})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        if form.is_valid():
+        form2 = self.profile_form_class(request.POST, request.FILES)
+        if form.is_valid() and form2.is_valid():
             user = form.save(commit=False)
             user.set_password(user.password)
             user.save()
+            prot = form2.save(commit=False)
+            prot.user = user
+            prot.save()
             messages.success(request, "You have successfully signed up.")
             login(request, user)
             return redirect("home")
@@ -78,58 +84,15 @@ class Logout(View):
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
 
-
-# def clean_date(date):
-#         # print(date)
-#         year = date[6:10]
-#         # print("year", year)
-#         month = date[:2]
-#         # print("month", month)
-#         day = date[3:5]
-#         # print("day", day)
-#         if len(date)==19:
-#             hour = date[11:13]
-#             # print("hour", hour)
-#             minutes = date[14:16]
-#             # print("minutes", minutes)
-#         else:
-#             hour = date[11]
-#             # print("hour", hour)
-#             minutes = date[13:15]
-#             # print("minutes", minutes)
-
-#         datetime_obj = datetime.datetime(int(year), int(month), int(day), int(hour), int(minutes))
-#         # print(datetime_obj)
-#         return datetime_obj
-
-
 def event_create(request):
-    if request.user.is_anonymous:
-        return redirect('signin')
-    form = EventForm()
-    if request.method == "POST":
-        # print(request.POST)
-        # my_date = clean_date(request.POST['date'])
-        # my_dict = {
-        #     'name': request.POST['name'],
-        #     'description': request.POST['description'],
-        #     'date': my_date,
-        #     'number_of_tickets': request.POST['number_of_tickets'],
-        #     'state': request.POST['state'],
-        #     'poster': request.FILES['poster'],
-        # }
-        # my_dict['date'] = my_date
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.organizer = request.user
-            event.save()
-            return redirect('home')
-        print(form.errors)
-    context = {
-        "form":form,
-    }
-    return render(request, 'create.html', context)
+    form = EventForm(request.POST, request.FILES)
+    if form.is_valid():
+        event = form.save(commit=False)
+        event.organizer = request.user
+        event.save()
+        return redirect('list')
+    print(form.errors)
+    
 
 
 def event_list(request):
@@ -163,13 +126,37 @@ def event_detail(request, event_id):
 def dashboard(request):
     if request.user.is_anonymous:
         return redirect('login')
+    form = EventForm()
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.organizer = request.user
+            event.save()
+            return redirect('list')
+        print(form.errors)
     events = Event.objects.filter(organizer= request.user)
     # events = request.user.organized.all()
 
+
     context = {
-    'events': events
+    "events": events,
+    "form":form,
+    
     }
     return render(request, 'dashboard.html', context)
+
+def chart_data(request):
+    lables = [['Task', 'Hours per Day'],]
+    for event in request.user.organized.all():
+        print('--'*30)
+        print([event.name, event.bookings.count()])
+        lables.append([event.name, event.bookings.count()])
+    print(lables)
+    response = {
+        "event" : lables,
+    }
+    return JsonResponse(response, safe=False)
 
 
 def event_update(request, event_id):
@@ -203,13 +190,13 @@ def event_booking(request, event_id, num_b):
     number_of_tickets_b = num_b
     rem_number_of_tickets = event_obj.seats_left()
     mass = "Your booking more than number of tickets"
-    tagc = "alert alert-danger"
+    tagc = "alert alert-danger alert-dismissible fade show"
     if number_of_tickets_b <= rem_number_of_tickets:
         booking = Booking(user=request.user, event=event_obj, number_of_booking=num_b)
         booking.save()
         rem_number_of_tickets -= num_b
         mass = "You have booked successfully."
-        tagc = "alert alert-success"
+        tagc = "alert alert-success alert-dismissible fade show"
     elif rem_number_of_tickets == 0 :
         mass = "The Event is full"
         
@@ -242,26 +229,77 @@ def my_booking(request):
 
     return render(request, 'my_booking.html', context)
 
-
-
-
-
-
+# remove and taje away URLS
 def update_profile(request):
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        if user_form.is_valid():
-            user_form.save()
-            messages.success(request, ('Your profile was successfully updated!'))
-            return redirect('profile')
-        else:
-            messages.error(request, ('Please correct the error below.'))
-    else:
-        user_form = UserForm(instance=request.user)
+    user_form = UserForm(request.POST, instance=request.user)
+    if user_form.is_valid():
+        user_form.save()
+        messages.success(request, ('Your profile was successfully updated!'))
+        return redirect('profile')
+    return redirect('profile')
+
+#remove 
+def create_profile(request):
+    if request.user.is_anonymous:
+        return redirect('login')
+    form = ProfileForm()
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('home')
     context = {
-        'user_form': user_form,
+        "form":form,
+    }
+    return render(request, 'create-profile.html', context)
+    
+
+def profile(request, user_id):
+    if request.user.is_anonymous:
+        return redirect('login')
+    user_obj = User.objects.get(id=user_id)
+    user_form = UserForm(instance=user_obj)
+    profile_obj = Profile.objects.get(user=user_obj)
+    profile_update_form = ProfileForm(instance=profile_obj)
+    events = Event.objects.filter(organizer= user_obj)
+    if request.method == "POST": 
+        user_form = UserForm(request.POST, instance=user_obj)
+        profile_update_form = ProfileForm(request.POST, request.FILES, instance=profile_obj)
+        if user_form.is_valid() and profile_update_form.is_valid():
+            user_form.save()
+            profile_update_form.save()
+            return redirect('profile', user_id)
+    context = {
+        "user": user_obj,
+        "user_form": user_form,
+        "events": events,
+        "Profile": profile_obj,
+        "profile_update_form": profile_update_form,
     }
     return render(request, 'profile.html', context)
 
+
+
+def booking_delete(request, event_id):
+    if request.user.is_anonymous:
+        return redirect('login')
+    now = datetime.datetime.now()
+    event_obj = Event.objects.get(id=event_id)
+    my_booking = Booking.objects.filter(event=event_obj).filter(user=request.user)
+    event_time_hour = event_obj.time.hour
+    today = event_obj.dateandtime.day
+    month = event_obj.dateandtime.month
+    year = event_obj.dateandtime.year
+    # print(today)
+    # print(month)
+    # print(year)
+    print(event_obj.time.hour - now.hour)
+    #if  (now.hour+3) > event_time_hour: 
+        #my_booking.delete()
+    
+        
+    return redirect('my_booking')
 
 

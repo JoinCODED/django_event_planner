@@ -1,18 +1,82 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-
 {% block title %}My Profile{% endblock title %}
 
-{% block content %}
 
-<br><br><br><br>
-<div class="container">
-<form method="POST" action= "{% url 'profile' %}">
-  {% csrf_token %}
-  {{ user_form| crispy }}
-  <button type="submit">Save changes</button>
-</form>
-</div>
+{% block content %}
+<header class="masthead2">
+  	<div class="container">
+      	<div class="jumbotron">
+      		<ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">{{user.first_name}} Events</a>
+        </li>
+        {% if request.user.id == user.id %}
+          <li class="nav-item">
+          <a class="nav-link" id="add-event" data-toggle="tab" href="#update" role="tab" aria-controls="addevent" aria-selected="false">Update Profile</a>
+        </li>
+        {% endif %}
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <br>
+          <div class="card">
+                  	<div class="card-header">
+                          <h4 class="modal-title" id="myModalLabel">More About {{user.first_name}}</h4>
+                      </div>
+                      <div class="card-body">
+                          <center>
+                          <img src="{{Profile.photo.url}}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+                         <h3 class="media-heading mt-2">{{user.first_name}} {{user.last_name}}</h3>
+                          </center>
+                          <hr>
+                          <center>
+                          <p class="text-left"><strong>Bio: </strong><br>
+                              {{Profile.description}}</p>
+                          <br>
+                          </center>
+                      </div>
+          </div>
+        
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">  
+          <div class="row ">
+            {% for event in events %}
+            <div class="col-4 my-2">
+            <div class="card" style="width: 22rem;">
+              <img src="{{event.poster.url}}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"> Name of Event :{{event.name}}</h5>
+                <p class="card-text">Description : {{event.description}}</p>
+                <p class="card-text">Organized by : {{event.organizer}}</p>
+                <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small></p>
+              </div>
+              <a href="{{event.get_absolute_url}}"> <button type="button" class="btn btn-dark btn-block my-2" >  <span>details</span></button> </a>
+            </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="tab-pane fade" id="update" role="tabpanel" aria-labelledby="add-event">
+          	<div class="jumbotron text-white">
+      			<form method="POST" action= "{% url 'profile' request.user.id %}" enctype="multipart/form-data">
+      			  {% csrf_token %}
+      			  {{ user_form| crispy }}
+      			  <hr>
+      			  {{ profile_update_form| crispy }}
+      			  <input class = "btn btn-primary btn-block mt-5" type="submit" value="Save">
+      			</form>
+      		</div>
+        </div> 
+      </div>
+		</div>
+	</div>
+</header>
 
 {% endblock content %}
+
+

@@ -1,4 +1,6 @@
 Django==2.1
 django-crispy-forms==1.7.2
+django-google-charts==0.1.1
+django-tempus-dominus==5.1.2.2
 Pillow==5.4.1
 pytz==2018.5

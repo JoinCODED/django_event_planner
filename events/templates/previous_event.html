@@ -3,28 +3,40 @@
 {% block title %}Events{% endblock title %}
 
 {% block content %}
-    <br><br><br><br>
-<div class="container">
-  <div class="row ">
-{% for event in bookings %}
-<div class="col-4 my-2">
-<div class="card" style="width: 22rem;">
-  <img src="{{event.event.poster.url}}" class="card-img-top" alt="...">
-
-  <div class="card-body">
-    <h5 class="card-title">{{event.event.name}}</h5>
-    <p class="card-text"><small class="text-muted">{{event.event.dateandtime}}</small></p>
-    <hr>
-    <p class="card-text">{{event.event.description}}</p>
-    <hr>
-</div>
-</div>
-
-{% endfor %}
-
-</div>
-</div>
-  <br><br><br><br>
+<header class="masthead2">
+    <div class="container">
+        <div class="jumbotron">
+            <div class="row ">
+              {% for event in bookings %}
+                <div class="col-4 my-2">
+                  <div class="card" style="width: 22rem;">
+                    <img src="{{event.event.poster.url}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-8">
+                          <h5 class="card-title">{{event.event.name}}</h5>
+                        </div>
+                        <div class="col-4">
+                          <h1><span class="badge badge-dark badge-pill">{{event.number_of_booking}}</span></h1>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.event.place}}</span></small> <br> <small class="text-muted" > <i class="fas fa-user"></i><span class="ml-2"> Organized by : {{event.event.organizer}} </span></small></p>
+                        </div>
+                      </div>
+                    <hr>
+                    <p class="card-text">{{event.event.description}}</p>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+</header>
+  
 {% endblock content %}
 
 

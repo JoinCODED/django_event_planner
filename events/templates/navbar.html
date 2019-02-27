@@ -27,8 +27,8 @@
             {{request.user}}
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
-            <a class="dropdown-item" href="{% url 'previous_event' %}">Previouse Events</a>
+            <a class="dropdown-item" href="{% url 'profile' request.user.id %}">My Profile</a>
+            <a class="dropdown-item" href="{% url 'previous-event' %}">Previouse Events</a>
             <a class="dropdown-item" href="{% url 'my_booking' %}">My Booking</a>
           </div>
         </div>

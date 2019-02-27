@@ -8,24 +8,22 @@
 {% endblock title %}
 
 {% block content %}
-    
-    <br><br><br><br>
+<header class="masthead2 text-white">
     <div class="container">
-      <div class="row">
-        <div class="col">
-          <form method="post" action="{% url 'update' event.id %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form|crispy}}
-            <input type="submit" name="OK Sava">
-          </form>
-        </div>
-      </div>
+        <div class="jumbotron">
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <form method="post" action="{% url 'update' event.id %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form|crispy}}
+                  <input class = "btn btn-primary btn-block mt-5" type="submit" value="Save">
+                </form>
+              </div>
+            </div>
+          </div>
     </div>
-    <br><br><br><br>
-        <!--<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker1').datetimepicker();
-            });
-        </script>-->
+  </div>
+</header>        
 {% endblock content %}
  
