@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'events',
 
     'crispy_forms',
+    'tempus_dominus',
     'rest_framework',
-
+    'api'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -121,7 +122,7 @@ JWT_AUTH = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Riyadh'
 
 USE_I18N = True
 

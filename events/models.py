@@ -9,6 +9,7 @@ from django.dispatch import receiver
 class Event(models.Model):
     name = models.CharField(max_length = 120)
     dateandtime = models.DateField()
+    time = models.TimeField()
     description = models.TextField()
     number_of_tickets = models.IntegerField()
     cho_place = (
@@ -46,7 +47,13 @@ class Booking(models.Model):
         return ("%s booking for %s" %(self.user.username , self.event.name))
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='user_logos')
+    description = models.TextField()
 
+    def __str__(self):
+        return self.user.first_name
 
 
 

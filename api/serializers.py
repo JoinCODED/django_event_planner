@@ -80,5 +80,4 @@ class EventDetailSerializer(serializers.ModelSerializer):
 #         event_list = EventListSerializer(organizer_events, many=True).data
 #         return event_list
 
-    
-        
+
