@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}My Profile{% endblock title %}
+
+{% block content %}
+
+<header class="masthead2">
+  	<div class="container text-white">
+      	<div class="jumbotron">
+			<form method="POST" action= "{% url 'create_profile' %}" enctype="multipart/form-data">
+			  {% csrf_token %}
+			  {{ form| crispy }}
+			  <input class = "btn btn-primary btn-block mt-5" type="submit" value="Save">
+			</form>
+		</div>
+	</div>
+</header>
+{% endblock content %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Events{% endblock title %}
+
+{% block content %}
+<header class="masthead2">    
+  <div class="masthead-content">
+    <div class="container">
+      <div class="jumbotron">
+        <form action="{% url 'list' %}">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="q" value="{{request.GET.q}}">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+          </div>
+        </form>
+        <div class="row ">
+        {% for event in events %}
+          <div class="col-4 my-2">
+            <div class="card bg-light" style="width: 22rem;">
+              <img src="{{event.poster.url}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">{{event.name}}</h5>
+                  <p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small> <br> <small class="text-muted" > <i class="fas fa-user"></i><span class="ml-2"> Organized by : {{event.organizer}} </span></small></p>
+                  <hr>
+                  <p class="card-text">{{event.description}}</p>
+                  <hr>
+                  <p class="card-text">Number of Tickets Remaining : <span id="numbr{{event.id}}">{{event.seats_left}}</span> </p>
+                </div>  
+                <div id="messages{{event.id}}" class="d-none">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </div>
+                {% if request.user.is_authenticated %}
+                <div id="bookForm" class="form-inline my-2 mx-2">
+                <div class="form-group mx-2">
+                  <input id="id_number_of_boking{{event.id}}" type="number" name="quantity">
+                </div> 
+                <button type="button" onclick="booking({{event.id}})" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Booking">Booking</button>
+              </div> 
+              {% endif %}
+              <a class="btn btn-outline-primary mx-3 my-2" href="{{event.get_absolute_url}}"> <span> {{event.name}} detail</span> </a>
+
+            </div>
+          </div>
+
+        {% endfor %}
+
+</div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+    function booking(id) {
+      let mass = document.getElementById("messages"+id);
+      let number_of_boking = document.getElementById("id_number_of_boking"+id);
+      let tag = document.getElementById("tag"+id);
+      let value = number_of_boking.value;
+        $.ajax(
+            {
+                type:'GET',
+                url: '/event/booking/'+id+'/'+value+'/',
+                error: function(){
+                    console.log('error');
+                },
+                success: function(data){
+                    console.log(data);
+                    let rem_id = "#numbr"+id;
+                        $(rem_id).text(data.rem_number_of_tickets);
+                        $(mass).addClass(data.tagc);
+                        $(mass).append(data.mass);
+                        $(mass).removeClass("d-none");
+                },
+            }
+        );
+    };
+</script>
+    </div>
+</header>
+{% endblock content %}
+
+

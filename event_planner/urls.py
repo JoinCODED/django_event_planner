@@ -17,10 +17,29 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from api.views import (
+EventListView,
+UserCreateView,
+EventUpdateView,
+EventCreateView,
+EventDetailView,
+OrganizerEventsView,
+)
+from rest_framework_jwt.views import obtain_jwt_token
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('events.urls')),
+    path('api/list/', EventListView.as_view(), name='api-list'),
+    path('api/organizer/', EventListView.as_view(), name='api-organizer'),
+    path('api/signup/', UserCreateView.as_view(), name='api-signup'),
+    path('api/signin/', obtain_jwt_token, name='api-signin'),
+    path('api/create/', EventCreateView.as_view(), name='api-create'),
+    path('api/update/<int:event_id>/', EventUpdateView.as_view(), name='api-update'),
+    path('api/detail/<int:event_id>/', EventDetailView.as_view(), name='api-detail'),
+    path('api/organizer/events/', OrganizerEventsView.as_view(), name='organizer-events')
 ]
 
 

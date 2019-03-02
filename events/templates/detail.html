@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Detail{% endblock title %}
+
+{% block content %}
+<header class="masthead2">
+  <div class="container">
+      <div class="jumbotron">
+        <div class="card mb-3">
+           	<div class="row no-gutters my-2 mx-2">
+              	<div class="col-4">
+                		<img src="{{event.poster.url}}" class="img-fluid" alt="...">
+                    {% if request.user == event.organizer %}
+                      <div class="mt-5">
+                        <a href="{% url 'update' event.id %}" class="btn btn-outline-primary btn-block">Update</a>
+                      </div>
+                      <div class="my-2">
+                          <a href="{% url 'delete' event.id %}" class="btn btn-outline-danger btn-block">Delete</a>
+                      </div>
+                    {% endif %}
+              	</div>
+                <div class="col-8 align-self-center">
+                  	<div class="card-body">
+                   	 	<h2 class="card-title text-center">{{event.name}}</h2>
+                        <div class="row">
+                          <div class="col-6">
+                          	<p class="card-text">
+                              <small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> 
+                              <br> 
+                              <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small> 
+                              <br> 
+                              <small class="text-muted" ><a href=""></a> <i class="fas fa-user"></i><span class="ml-2"> Organized by : <a href="{% url 'profile' event.organizer.id %}">{{event.organizer}}</a> </span></small>
+                            </p>
+                          </div>
+                          <div class="col-6">
+                            <div id="messages{{event.id}}" class="d-none">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                            </div>
+                            <p class="card-text ml-3">Number of Tickets Remaining : <span id="numbr">{{event.seats_left}} </span> </p>
+                            {% if request.user.is_authenticated %}
+                              <div id="bookForm" class="form-inline my-2 mx-2">
+                                <div class="form-group mx-2">
+                                  <input id="id_number_of_boking" type="number" name="quantity">
+                                </div> 
+                                  <button onclick="booking({{event.id}})" class="btn btn-outline-primary ">Booking</button>
+                              </div> 
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    	<hr>
+                    	<p class="card-text ml-2">{{event.description}}</p>
+                  	</div>
+              	</div>
+              	{% if request.user == event.organizer %}
+                  <hr>
+                  <div class="container text-center">
+                    <h2>Booking Details</h2>
+                        <table class="table table-light">
+                          <thead>
+                            <tr>
+                              <th scope="col">Booked by</th>
+                              <th scope="col">Event Name</th>
+                              <th scope="col">Total Number of Tickets Booked</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for ticket in booked_tickets %}
+                                <tr>
+                                  <td>{{ticket.user}}</td>
+                                  <td>{{ticket.event}}</td>
+                                  <td>{{ticket.number_of_booking}}</td>
+                                 </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                  </div>
+              	{% endif %}
+        </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      
+
+      function booking(id) {
+        let mass = document.getElementById("messages"+id);
+        let number_of_boking = document.getElementById("id_number_of_boking");
+        let tag = document.getElementById("tag");
+        let value = number_of_boking.value;
+          $.ajax(
+              {
+                  type:'GET',
+                  url: '/event/booking/'+id+'/'+value+'/',
+                  error: function(){
+                      console.log('error');
+                  },
+                  success: function(data){
+                      console.log(data);
+                      let rem_id = "#numbr";
+                          $(rem_id).text(data.new_num_of_tic);
+                          $(mass).addClass(data.tagc);
+                          $(mass).append(data.mass);
+                          $(mass).removeClass("d-none");
+                  },
+              }
+          );
+      };
+  </script>
+</header>
+{% endblock content %}
+
+
+
+
+

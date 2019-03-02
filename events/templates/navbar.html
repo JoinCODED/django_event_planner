@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#">Django Event Planner</a>
+    <a class="navbar-brand" href="{% url 'home' %}">Django Event Planner</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,14 +14,30 @@
           <a class="nav-link" href="{% url 'login' %}">Log In</a>
         </li>
         {% else %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'dashboard' %}">dashbord</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">{{ request.user }}</a>
+          <div class="dropdown">
+          <a  href="#" class="nav-link dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{request.user}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'profile' request.user.id %}">My Profile</a>
+            <a class="dropdown-item" href="{% url 'previous-event' %}">Previouse Events</a>
+            <a class="dropdown-item" href="{% url 'my_booking' %}">My Booking</a>
+          </div>
+        </div>
         </li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
+
+
+

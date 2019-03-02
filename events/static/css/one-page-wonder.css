@@ -31,7 +31,7 @@ h6 {
 .navbar-custom {
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(0, 0, 0);
 }
 
 .navbar-custom .navbar-brand {
@@ -48,6 +48,18 @@ h6 {
   letter-spacing: 0.1rem;
 }
 
+header.masthead2 {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(4rem + 52px);
+  padding-bottom: 7rem;
+  background: linear-gradient(0deg, #ff6a00 0%, #ee0979 100%);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: scroll;
+  background-size: auto;
+}
+
 header.masthead {
   position: relative;
   overflow: hidden;
@@ -57,7 +69,7 @@ header.masthead {
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
-  background-size: cover;
+  background-size: auto;
 }
 
 header.masthead .masthead-content {
