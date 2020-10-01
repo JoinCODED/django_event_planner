@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserSignup, UserLogin
+form .models import Event
+def event(request):
+    logged_in_user=request.user
+    event=Event.objects.filter(user=logged_in_user)    
+    context={'event',event}
+    return render(request, 'event.html', context=context)
 
 def home(request):
     return render(request, 'home.html')
